@@ -32,13 +32,7 @@ public class Mochila {
 		  return false;
 	  }
 	  
-	  /**
-	   * Este método uni duas mochilas
-	   * @param m Mochila
-	   * @return Bolean 
-	   */
 	  public Boolean Unir(Mochila m){
-		  //System.out.println("uni " + (this.size - this.pesar()) + " " + m.pesar());
 		  if((this.size - this.pesar()) >= m.pesar()) {
 			  for (Item Item: m.Listar()) {
 				    this.In(Item);

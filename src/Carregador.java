@@ -3,14 +3,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Carregador {
 	protected ArrayList<Item> allItens = new ArrayList<Item>();
 	private Mochila[][] matriz = null;
-	
+	private int tamanhoItem= 0;
 	public void LerItens() {
 		Boolean stop = false;
 		Scanner entrada = new Scanner(System.in);
@@ -24,38 +23,31 @@ public class Carregador {
 		}
 		String line = null;
 		try {
+			//ler entrada de dados
 			while ((line = buffer.readLine()) != null) {
-				System.out.println(line);
+				System.out.println(line );
 				String[] splited = line.split("\\s+");
 				String nome = splited[0];
 				int value = Integer.parseInt(splited[1]);
 				int peso = Integer.parseInt(splited[2]);
 				allItens.add( new Item(nome, value, peso) );
+				tamanhoItem++;
 			}
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		while(!stop) {
-//			System.out.println("* Adicionar Item:");
-//			
-//			System.out.print("** Nome:");
-//			String nome = entrada.next();
-//			
-//			System.out.print("** Valor:");
-//			float value = entrada.nextFloat();
-//			
-//			System.out.print("** Peso:");
-//			float peso = entrada.nextFloat();
-//			
-//			allItens.add( new Item(nome, value, peso) );
-//			System.out.print("** Parar:");
-//			stop = entrada.nextBoolean();
-//			System.out.println("*****");
-//		}
 	}
 	
-	public Mochila Guloso(){
+	public int getTamanhoItem() {
+		return tamanhoItem;
+	}
+
+	public void setTamanhoItem(int tamanhoItem) {
+		this.tamanhoItem = tamanhoItem;
+	}
+
+	public Mochila kild(){
 		Scanner entrada = new Scanner(System.in);
 		System.out.print("Informe o tamanho da mochila:");
 		float size = entrada.nextFloat();
@@ -65,25 +57,23 @@ public class Carregador {
 			Item maxItem = this.maxItem();
 			mochila.In(maxItem);
 			maxItem.adicionado = true;
-			//allItens.remove(maxItem);
 		}
 		
 		return mochila;
 	}
 	
 	public void Dinamico(Mochila m1){
-		System.out.println("***** \n Dinâmico");
+		System.out.println("***** [Dinamico] ***** ");
 		int s = (int) m1.getSize();
 		int i = this.getAllItens().size();
 		this.matriz = new  Mochila[i][s+1];
 		int i1 = 0, i2 =0;
 		for(Item item: this.getAllItens()) {
-			while(s >= i2) {
-				//System.out.println(i1 + " " + i2 );
-				matriz[i1][i2]= DinamicoAlg(item, i2, matriz, i1);
-				//System.out.println(i1 + " " + i2 + " = " + matriz[i1][i2].avaliar());
-				i2++;
-			}
+				while(s >= i2) {
+					matriz[i1][i2]= DinamicoAlg(item, i2, matriz, i1);
+					i2++;
+				}
+		
 			i2 = 0;
 			i1++;
 		}
@@ -118,8 +108,13 @@ public class Carregador {
 		int i = entrada.nextInt();
 		System.out.println("Mochila size : ");
 		int s = entrada.nextInt();
-		this.printMochila(this.matriz[i-1][s]);
-	}
+		try {
+			this.printMochila(this.matriz[i-1][s]);
+		}catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println("valor do item invalido, insira um valor valido entre 1 e "+ getTamanhoItem());
+			DinamicoResultado();
+		}
+	}	
 	
 	public Item maxItem() {
 		Item maxItem = null;
@@ -163,7 +158,7 @@ public class Carregador {
 		
 		for(Mochila[] linha: this.matriz) {
 			for(Mochila mochila: linha) {
-				System.out.print(" - " + mochila.avaliar());
+				System.out.print(" ["+ mochila.avaliar()+"] " );
 			}
 			System.out.println();
 		}

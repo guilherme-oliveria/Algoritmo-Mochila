@@ -1,4 +1,6 @@
-
+/*Data 30/04/2018 
+ * Guilherme
+ * */
 public class Item {
 	private float value;
 	private float peso;
